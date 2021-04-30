@@ -1,0 +1,10 @@
+.invoiceSection{
+    margin-top: 10vh;
+    height: 80vh;
+    background: white;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
