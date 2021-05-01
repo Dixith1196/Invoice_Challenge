@@ -1,28 +1,20 @@
+import React, {Fragment} from 'react'
 import logo from './logo.svg';
 import './App.css';
 import Invoice from '../src/views/screens/Invoice/invoice'
 import Header from '../src/views/components/Header/header'
+import GlobalStyle from '../src/utils/assets/styles'
+
 
 function App() {
   return (
-    <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
+    <Fragment>
+      <GlobalStyle />
+      {/* <div> */}
       <Header />
       <Invoice />
-    </div>
+        {/* </div>  */}
+    </Fragment>
   );
 }
 
