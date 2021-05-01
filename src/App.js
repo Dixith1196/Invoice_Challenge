@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Invoice from '../src/views/screens/Invoice/invoice'
+import Header from '../src/views/components/Header/header'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           Learn React
         </a>
       </header> */}
+      <Header />
       <Invoice />
     </div>
   );

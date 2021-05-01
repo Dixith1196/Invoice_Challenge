@@ -6,7 +6,7 @@ import Navbar from 'react-bootstrap/Navbar'
 function Header() {
   return (
     <Navbar className="Header">
-    <Navbar.Brand href="/">
+    {/* <Navbar.Brand href="/">
       <img
         alt=""
         // src={logo}
@@ -15,7 +15,7 @@ function Header() {
         // className="d-inline-block align-top"
       />{' '}
       Invoice
-    </Navbar.Brand>
+    </Navbar.Brand> */}
   </Navbar>
   );
 }
