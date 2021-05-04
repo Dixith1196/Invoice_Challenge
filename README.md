@@ -1,12 +1,22 @@
+
+#Prerequisites to have to run this application
+
+1. Install npm
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
-In the project directory, you can run:
+Install packages included in the project into local, you should run:
 
-### `npm start`
+### `npm install --save`
+
+In the project directory, Run the application using:
+
+### `npm run start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -14,57 +24,33 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
+# What I did in this project
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Created empty Github repository for the project 
 
-### `npm run build`
+2. Created react app in local using `npx create-react-app invoice_challenge`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Installed necessary packages in local using node package manager (npm)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. Did architecture of the project into reusable components and screens.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. The application entry point is app.js, so views are imported into app.js and navigated from there
 
-### `npm run eject`
+6. Added Axios instance with the base url and added headers needed to make the request with the authorization token
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+7. made structure to create an invoice with details like customer name, invoice details, item details, memo and the amount detils like subtotal, tax and the total.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+8. Fetched Customer details from sample curl given in mail `https://api.qd.fattpay.com/customer` with the token provided as prod api is not working without correct given.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+9. Fetched item details from sample curl given in mail `https://api.qd.fattpay.com/item` with the token provided as prod api is not working without correct given.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+10. Calculated the total amount based on the items added into the invoice with their respective prices fetched from database multiplied by the quantity requested.
 
-## Learn More
+11. Included the items which have discounts and subtracted from the total based on the discount percentage and the value of the discount requested.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+12. Made the post request using the sample curl given in mail `https://api.qd.fattpay.com/invoice` with the details filled in the invoice creation form and displaying the response to the user.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+13. If any information is missing in the body of post request made to create an invoice, displaying the bad request message to the user.
 
-### Code Splitting
+14. with successful creation of invoice, the page will be refreshed with new invoice number to create a new invoice for the user.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
