@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
+import React, {Component, memo} from 'react'
 import './invoice.css'
 import CustomerList from '../../components/CustomerList/customerList'
 import instance from '../../../utils/Networking/network'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Select from 'react-select'
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import moment  from "moment";
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
@@ -15,21 +15,14 @@ class Invoice extends Component{
       this.state = {
       items: [],
       rows: [],
-      offset: 0,
-      data: [],
-      perPage: 1,
-      currentPage: 0,
+      selectedItems: [],
       selectedIdx: 1,
       options: [],
-      selectedId: "",
       selectedValue: "",
-      selectedDescription: "",
       selectedQty: 0,
-      price: "",
       selectedPrice: "0",
       amount: "",
       taxRate: 10,
-      customerListDefault: {},
       customerList: [],
       tax: 0,
       subtotal: 0,
@@ -46,53 +39,57 @@ class Invoice extends Component{
     }
 
     addRow = () => {
-        const {subtotal,tax, total,taxRate, options, selectedId, rows,selectedValue, selectedQty, selectedPrice, amount, price} = this.state;
-        console.log(selectedValue, "--needed details are here--")
-
+        const {subtotal,tax, total,taxRate, options, rows,selectedValue, selectedQty, selectedPrice, amount, price} = this.state;
         if(rows.length == 0){
             this.setState(prevState => ({
                 rows: [...prevState.rows, {"index": rows.length,"value": selectedValue, "amount": amount}],
             }))
         }else{
             if(selectedValue != "" && amount != ""){
+                if(selectedValue.is_discount == true){
                 this.setState(prevState => ({
                     rows: [...prevState.rows, {"index": rows.length,"value": selectedValue, "amount": amount}],
+                    selectedItems: [...prevState.selectedItems, selectedValue],
+                    subtotal: subtotal - amount,
+                    tax: (subtotal - amount)/100*taxRate,
+                    total: (subtotal - amount) + ((subtotal - amount)/100*taxRate)
+                }))
+                this.state.selectedPrice = "0"
+                this.state.amount = ""    
+                
+            }else{
+                this.setState(prevState => ({
+                    rows: [...prevState.rows, {"index": rows.length,"value": selectedValue, "amount": amount}],
+                    selectedItems: [...prevState.selectedItems, selectedValue],
                     subtotal: subtotal + amount,
                     tax: (subtotal + amount)/100*taxRate,
                     total: (subtotal + amount) + ((subtotal + amount)/100*taxRate)
                 }))
                 this.state.selectedPrice = "0"
                 this.state.amount = ""    
-            }else{
+            }
+            } else{
                 toast.warning("Please fill all the fields to add an item to invoice")
-            }
-            }
+        }
               
         }
+    }
 
       deleteRow = (idx) => {
-          console.log(idx, "idx is here---")
           var rows = [...this.state.rows];
             rows.splice((idx) , 1);
             this.setState({rows});
-       
-        console.log(rows,"---rows after deleting---")
-    
       };
 
   
       componentDidMount(){
         this.getLineItem()
-        console.log(this.state.rows,"---current rows are here---")
-        var invNum = require('invoice-number')
-       
         this.setState({
             invoiceNumber: Math.random().toString(36).substr(2, 9)
         })
       }
 
       changeQty = (e)=> {
-          console.log(e.target.value * this.state.selectedPrice, "---amount is here---")
         this.setState({
             selectedQty: e.target.value,
             amount: e.target.value * this.state.selectedPrice
@@ -108,7 +105,6 @@ class Invoice extends Component{
 
 
       selectedItem = (e, i) => {
-          console.log(e, i, "--- e ishere---")
          this.setState({
              selectedIdx: i,
              selectedValue: e.value, 
@@ -118,11 +114,9 @@ class Invoice extends Component{
 
     customerNameChange = (e) => {
        instance.get("/customer?firstname=" + e.target.value).then(res => {
-           console.log(res,"---response is here---")
            this.setState({
                showList: true,
                customerList: res.data.data,
-            //    customerName: res.data.data[0].firstname + " " + res.data.data[0].lastname
            })
        }).catch(e => {
            console.log(e, "---error is here---")
@@ -130,29 +124,51 @@ class Invoice extends Component{
     }
 
     createInvoice = () => {
-        const {rows} = this.state;
+        const {selectedItems, rows, customerList, tax, subtotal, total} = this.state;
         const body = {
-                "customer_id": "",
-                "payment_method_id":"",
+                "customer_id": customerList.id || "",
+                "payment_method_id": "",
                 "meta": {
-                    "tax":2,
-                    "subtotal":10,
-                    "lineItems": rows
+                    "tax": tax,
+                    "subtotal": subtotal,
+                    "lineItems": selectedItems
                 },
-                "total": "12.00",
+                "memo": memo || "",
+                "total": total,
                 "url": "https://omni.fattmerchant.com/#/bill/",
                 "send_now": false,
                 "files": []
         }
         instance.post('/invoice', body).then(res => {
-            console.log(res, "---response is here---")
+            if(res.status == 200 && res.data != undefined){
+                toast.success("Invoice created successfully")
+                this.setState({
+                    items: [],
+      rows: [],
+      selectedItems: [],
+      selectedIdx: 1,
+      options: [],
+      selectedValue: "",
+      selectedQty: 0,
+      selectedPrice: "0",
+      amount: "",
+      taxRate: 10,
+      customerList: [],
+      tax: 0,
+      subtotal: 0,
+      customerName: "",
+      memo: "",
+      invoiceNumber: "",
+      total: 0,
+      showList: false,
+                })
+            }
         }).catch(e => {
             console.log(e,"---error is here---")
         })
     }
 
     getCustomerName = (e) => {
-        console.log(e,"---value is here---")
         var name = e.target.innerText
        
        this.setState({
@@ -163,7 +179,6 @@ class Invoice extends Component{
 
       getLineItem = (props) => { 
         instance.get("/item").then(res => {
-            console.log(res.data.data, res.data.data.item,"--needs are here--")
             this.setState({
                 items: res.data.data,
                 currentPage: res.data.current_page,
@@ -188,8 +203,7 @@ class Invoice extends Component{
     }
 
 render(){
-    const {rows,tax, memo, taxRate, showList,customerName, customerList, subtotal, total, selectedIdx, options, selectedValue, selectedQty, selectedPrice, price, amount} = this.state
-    console.log(this.state.rows,"---current rows are here2---")
+    const {rows,tax, memo, taxRate, showList,customerName, customerList, subtotal, total, selectedPrice, amount} = this.state
    {customerName &&  (document.getElementById("customerInput").value = customerName)}
     return(
          <div className="invoiceSection" id="container">
@@ -222,14 +236,12 @@ render(){
                   </thead>
                   <tbody style={{border: "1px solid #eee", padding: "8px"}}>
                      {rows.map((row, index) => {
-                         console.log(rows[index],"--idx is here---")
                          var ix;
                        if(index == 0){
                           ix= 0
                        }else{
                            ix=index + 1
                        }
-                       console.log(rows, "rows areh ere----")
                         return ( <tr>
                             <td>
                             {rows[index + 1] === undefined ?  <Select options={this.state.options}
