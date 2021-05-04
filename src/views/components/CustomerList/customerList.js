@@ -1,7 +1,6 @@
 import React from 'react';
 
 const CustomerList = ({customerList=[], getCustomerName}) => {
-    // const {getCustomerName} = props
   return (
     <>
     { customerList.map((data,index) => {
