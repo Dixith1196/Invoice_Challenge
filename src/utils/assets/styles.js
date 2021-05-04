@@ -24,6 +24,11 @@ const GlobalStyle = createGlobalStyle`
      border-collapse: collapse;
  }
 
+ ul {
+  list-style-position: inside !important;
+  overflowY: scroll;
+  }
+
  thead, td {
   padding: 15px;
   text-align: left;
@@ -36,15 +41,16 @@ tbody{
 
  label{
      font-size: 16px;
+     color: #gray !important;
  }
 
     input {
         outline: 0;
         border-width: 0 0 2px;
-        border-color: #DEDEDE;
+        border-color: #E4E9EF !important;
       }
       input:focus {
-        border-color: #000
+        border-color: #999999 !important
       }
  
 
